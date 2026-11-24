@@ -11,6 +11,7 @@ export interface DialogueRequestPayload {
   act: 1 | 2 | 3;
   speaker: 'narrator' | 'clock' | 'book' | 'crystal';
   recentContext?: string;
+  availableChoiceLabels?: string[];
   hintTier?: 0 | 1 | 2;
 }
 
@@ -72,6 +73,7 @@ export async function requestDialogue(
       act: payload.act,
       speaker: payload.speaker,
       recentContext: payload.recentContext,
+      availableChoiceLabels: payload.availableChoiceLabels,
     }),
   };
 

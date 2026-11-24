@@ -201,6 +201,31 @@ describe('AI Client (aiClient.ts) Request Handling & Resilience', () => {
     expect(response.mood).toBe('hope');
   });
 
+  it('handles all four emotions (Hope, Sadness, Curiosity, Fear) correctly', async () => {
+    const emotions = ['hope', 'sadness', 'curiosity', 'fear'] as const;
+
+    for (const emotion of emotions) {
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          dialogue: `Atmospheric line tuned for ${emotion}.`,
+          hint: `Contextual hint for ${emotion}.`,
+          mood: emotion,
+        }),
+      } as Response);
+
+      const res = await requestDialogue({
+        nodeId: 'n_intro',
+        emotion,
+        act: 1,
+        speaker: 'narrator',
+      });
+
+      expect(res.mood).toBe(emotion);
+      expect(res.dialogue).toContain(emotion);
+    }
+  });
+
   it('Property 7 / HR-2: Story state is strictly immune to AI output', async () => {
     // Proves that calling requestDialogue never modifies story state or variables
     const initialStory = createInitialStoryState('hope');
