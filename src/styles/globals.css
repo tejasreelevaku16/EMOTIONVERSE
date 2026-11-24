@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-cinzel: 'Cinzel', serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #050608;
+  color: #f3f4f6;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+}
+
+.font-cinzel {
+  font-family: var(--font-cinzel);
+}
+
+/* Glassmorphism primitives */
+.glass-panel {
+  background: rgba(10, 31, 28, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(103, 232, 249, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+.glass-panel-subtle {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-button:hover {
+  background: rgba(103, 232, 249, 0.15);
+  border-color: rgba(103, 232, 249, 0.4);
+  box-shadow: 0 0 20px -5px rgba(103, 232, 249, 0.4);
+}
+
+/* Text glow utilities */
+.text-glow-cyan {
+  text-shadow: 0 0 12px rgba(103, 232, 249, 0.6);
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 12px rgba(250, 204, 21, 0.6);
+}
+
+.text-glow-emerald {
+  text-shadow: 0 0 12px rgba(34, 211, 170, 0.6);
+}
+
+/* Custom minimal scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(5, 6, 8, 0.8);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(103, 232, 249, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(103, 232, 249, 0.5);
+}
