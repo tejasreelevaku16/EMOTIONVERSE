@@ -1,4 +1,4 @@
-// Centralized Zustand Game Store (Phase 3)
+﻿// Centralized Zustand Game Store (Phase 3)
 // Bridges the pure deterministic story engine, atmosphere controller, persistence, and UI.
 
 import { create } from 'zustand';
@@ -22,6 +22,29 @@ import {
 export type GameScreen = 'landing' | 'emotion_selection' | 'exploration' | 'ending';
 
 export type ArtifactType = 'clock' | 'book' | 'crystal';
+
+const OBJECTIVE_MAP: Record<string, string> = {
+  n_intro: 'Find the source of the fading light.',
+  n_clock: 'Investigate the Forgotten Clock.',
+  n_clock_echo_wind: 'The clock stirs — feel the consequence.',
+  n_clock_echo_leave: 'Leave the clock undisturbed.',
+  n_clock_echo_break: 'The clock is shattered.',
+  n_clock_echo_study: 'Ancient glyphs decoded.',
+  n_clock_after: 'Seek the voice hidden in the Living Book.',
+  n_midpoint: 'Find the Living Book in the deep grove.',
+  n_book: 'Engage with the Living Book.',
+  n_book_echo_trust: 'The grove responds to your trust.',
+  n_book_echo_reject: 'The book falls silent.',
+  n_book_echo_partial: 'Historical knowledge gathered.',
+  n_book_after: 'Cross into the final sanctuary.',
+  n_crossing: 'Ascend to the Last Crystal.',
+  n_crystal_intro: 'Approach the Last Crystal.',
+  n_crystal: 'Decide the fate of the Last Crystal.',
+  n_crystal_echo_hymn: 'The crystal resonates — make your final choice.',
+  n_end_restore: 'The ancient light is restored.',
+  n_end_transform: 'The world is transformed.',
+  n_end_dark: 'The last light fades.',
+};
 
 export interface GameState {
   // Navigation / Screen State
@@ -50,6 +73,10 @@ export interface GameState {
   isInteractionPanelOpen: boolean;
   activeArtifact: ArtifactType | null;
 
+  // Camera & Objective (Phase 5 quality)
+  cameraMode: 'follow' | 'pushIn' | 'hold';
+  objectiveText: string;
+
   // Actions
   goToScreen: (screen: GameScreen) => void;
   startNewJourney: (emotion: Emotion) => void;
@@ -62,6 +89,7 @@ export interface GameState {
   toggleReducedMotion: () => void;
   openArtifactPanel: (artifact: ArtifactType) => void;
   closeArtifactPanel: () => void;
+  setCameraMode: (mode: 'follow' | 'pushIn' | 'hold') => void;
   resetGame: () => void;
 }
 
@@ -110,6 +138,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   isInteractionPanelOpen: false,
   activeArtifact: null,
 
+  cameraMode: 'follow',
+  objectiveText: 'Find the source of the fading light.',
+
   goToScreen: (screen) => set({ screen }),
 
   startNewJourney: (emotion) => {
@@ -136,6 +167,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       isAiLoading: false,
       isInteractionPanelOpen: false,
       activeArtifact: null,
+      cameraMode: 'follow',
+      objectiveText: OBJECTIVE_MAP['n_intro'],
     });
 
     debouncedSave({
@@ -193,6 +226,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       isAiLoading: false,
       isInteractionPanelOpen: false,
       activeArtifact: null,
+      cameraMode: 'follow',
+      objectiveText: OBJECTIVE_MAP[saved.storyNodeId] ?? 'Explore the sanctuary.',
     });
 
     return true;
@@ -241,6 +276,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       isAiLoading: false,
       isInteractionPanelOpen: false,
       activeArtifact: null,
+      cameraMode: 'follow',
+      objectiveText: OBJECTIVE_MAP[nextState.node] ?? 'Explore the sanctuary.',
     });
 
     debouncedSave({
@@ -296,12 +333,14 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   openArtifactPanel: (artifact) => {
-    set({ isInteractionPanelOpen: true, activeArtifact: artifact });
+    set({ isInteractionPanelOpen: true, activeArtifact: artifact, cameraMode: 'pushIn' });
   },
 
   closeArtifactPanel: () => {
-    set({ isInteractionPanelOpen: false, activeArtifact: null });
+    set({ isInteractionPanelOpen: false, activeArtifact: null, cameraMode: 'follow' });
   },
+
+  setCameraMode: (mode) => set({ cameraMode: mode }),
 
   resetGame: () => {
     clearSavedGame();
@@ -322,6 +361,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       isAiLoading: false,
       isInteractionPanelOpen: false,
       activeArtifact: null,
+      cameraMode: 'follow',
+      objectiveText: 'Find the source of the fading light.',
     });
   },
 }));
